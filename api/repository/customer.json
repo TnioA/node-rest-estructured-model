@@ -1,0 +1,31 @@
+{
+  "customers": {
+        "data": [
+            {
+                "id": 1,
+                "name": "Jurema Silva Helena"
+                
+            },
+            {
+                "id": 2,
+                "name": "Alberto Conrado Silveira"
+                
+            },
+            {
+                "id": 3,
+                "name": "Junior Filho Almeida"
+                
+            },
+            {
+                "id": 4,
+                "name": "Ricardo Silva Oliveira"
+                
+            },
+            {
+                "id": 5,
+                "name": "Pedro Lima Albuquerque"
+                
+            }
+        ]
+   }
+}
