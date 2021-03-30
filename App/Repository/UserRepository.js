@@ -1,9 +1,10 @@
 const sqlite = require('sqlite-sync');
 
-class Context {
+class UserRepository {
+    
     constructor() {}
 
-    static migration() {
+    Migration() {
         try {
             sqlite.connect('db.sqlite'); 
             var content = [];
@@ -19,7 +20,7 @@ class Context {
         }
     } 
 
-    static getAllUsers() {
+    GetAllUsers() {
         try {
             sqlite.connect('db.sqlite'); 
             var content = [];
@@ -32,7 +33,7 @@ class Context {
         }
     }  
 
-    static getUserById(id) {
+    GetUserById(id) {
         try {
             sqlite.connect('db.sqlite');
             var content = [];
@@ -45,7 +46,7 @@ class Context {
         }
     }
 
-    static addUser(user) {
+    AddUser(user) {
         try {
             sqlite.connect('db.sqlite');
             var content = [];
@@ -65,7 +66,7 @@ class Context {
         }
     }
 
-    static editUser(user) {
+    EditUser(user) {
         try {
             sqlite.connect('db.sqlite');
             var content = [];
@@ -83,6 +84,24 @@ class Context {
             return { Success: false, Message: 'Error adding user', Error: error};
         }
     }
+
+    RemoveUser(id){
+        try {
+            sqlite.connect('db.sqlite');
+            var content = [];
+
+            content = sqlite.run("DELETE FROM User WHERE Id = " + id + ";");
+
+            sqlite.close();
+            if(content.error === undefined){
+                return { Success: true, Message: 'Customer removed successfuly!'};
+            }else{
+                throw content.error;
+            }
+        } catch (error) {
+            return { Success: false, Message: 'Error removing user', Error: error};
+        }
+    }
 }
 
-module.exports = Context;
+module.exports = UserRepository;

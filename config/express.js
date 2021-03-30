@@ -13,8 +13,9 @@ module.exports = () => {
   // MIDDLEWARES
   app.use(bodyParser());
 
-  //ROTAS DA APLICACAO
-  require('../api/routes/user')(app);
+  //APPLICATION ROUTES
+  const Router = require('../App/Router/Router');
+  new Router(app);
 
   return app;
 };

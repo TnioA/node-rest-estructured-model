@@ -1,17 +1,22 @@
-const context = require('../repository/repository.js');
+const UserRepository = require('../Repository/UserRepository.js');
 var crypto = require('crypto');
 
-module.exports = () => {
-    const controller = {};
+class UserController {
 
-    controller.getAll = (req, res) => {
-        var customerList = context.getAllUsers();
+    _userRepository;
+
+    constructor() {
+        this._userRepository = new UserRepository();
+     }
+
+    GetAll = (req, res) => {
+        var customerList = this._userRepository.GetAllUsers();
         res.status(200).json(customerList);
     }
     
-    controller.getById = (req, res) => {    
+    GetById = (req, res) => {    
         let customerId = req.params.id;
-        const foundCustomerIndex = context.getUserById(customerId);
+        const foundCustomerIndex = this._userRepository.GetUserById(customerId);
         if (foundCustomerIndex === -1) {
             res.status(404).json({
                 Message: 'Customer does not exist.',
@@ -25,18 +30,18 @@ module.exports = () => {
         }
     }
 
-    controller.add = (req, res) => {
+    Add = (req, res) => {
         var user = {
             FullName: req.body.FullName,
             NickName: req.body.NickName,
-            Password: getPasswordHash(req.body.Password),
+            Password: this.GetPasswordHash(req.body.Password),
             IsMaster: req.body.IsMaster
         }
         
-        res.status(200).json(context.addUser(user));
+        res.status(200).json(this._userRepository.AddUser(user));
     }
 
-    controller.edit = (req, res) => {
+    Edit = (req, res) => {
 
         if(req.body.Id === undefined || req.body.FullName === undefined || req.body.FullName === undefined ||
             req.body.Password === undefined || req.body.IsMaster === undefined) {
@@ -51,13 +56,13 @@ module.exports = () => {
                 Id: req.body.Id,
                 FullName: req.body.FullName,
                 NickName: req.body.NickName,
-                Password: getPasswordHash(req.body.Password),
+                Password: this.GetPasswordHash(req.body.Password),
                 IsMaster: req.body.IsMaster
             }
 
             console.log(user);
 
-            const foundCustomerIndex = context.getUserById(req.body.Id);
+            const foundCustomerIndex = this._userRepository.GetUserById(req.body.Id);
             if (foundCustomerIndex === -1) {
                 res.status(404).json({
                     Message: 'Customer does not exist.',
@@ -65,35 +70,34 @@ module.exports = () => {
                     Customers: [],
                 });
             } else {  
-                res.status(200).json(context.editUser(foundCustomerIndex));
+                res.status(200).json(this._userRepository.EditUser(foundCustomerIndex));
             }
         }
     }
 
-    controller.remove = (req, res) => {
+    Remove = (req, res) => {
         let customerId = req.params.id;
 
-        const foundCustomerIndex = customerList.findIndex(customer => customer.id === customerId);
-        if (foundCustomerIndex === -1) {
+        const foundCustomer = this._userRepository.GetUserById(customerId);
+
+        if (foundCustomer === -1) {
             res.status(404).json({
                 message: 'Customer does not exist.',
-                success: false,
-                customers: [],
+                success: false
             });
         } else {
-            customerList.splice(foundCustomerIndex, 1);
+            this._userRepository.RemoveUser(customerId);
             res.status(200).json({
                 message: 'Cliente encontrado e deletado com sucesso!',
-                success: true,
-                customers: customerList,
+                success: true
             });
         }
     }
 
-    function getPasswordHash(pass) {
+    GetPasswordHash(pass) {
         var hash = crypto.createHash('md5').update(pass).digest('hex');
         return hash
     }
-
-  return controller;
 }
+
+module.exports = UserController;
